@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.windows10gamer.demo3.activity.PaymentActivity">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/appBarLayout2">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_payment"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/myYellow"
+            app:title="XÁC NHẬN THANH TOÁN"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+        </android.support.v7.widget.Toolbar>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#030303"
+                android:background="@color/myGray"
+                android:textSize="18sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:text="NGUỒN TIỀN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <RelativeLayout
+                android:background="@color/myWhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_margin="10dp"
+                    android:background="@drawable/border_box"
+                    android:src="@drawable/logo"
+                    android:id="@+id/image_type"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true" />
+                <TextView
+                    android:textSize="16sp"
+                    android:text="Ví MICROPAY"
+                    android:layout_toRightOf="@+id/image_type"
+                    android:padding="1dp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212020"
+                    android:textStyle="bold"
+                    android:id="@+id/textview_type"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="Số dư : 500000 đ"
+                    android:layout_toRightOf="@+id/image_type"
+                    android:padding="1dp"
+                    android:textColor="#696969"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/text_balance"
+                    android:layout_below="@+id/textview_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="#3095fa"
+                    android:text="Thay đổi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#030303"
+                android:background="@color/myGray"
+                android:textSize="18sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:text="CHI TIẾT GIAO DỊCH"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TableLayout>
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appBarLayout2"
+        android:layout_centerHorizontal="true">
+
+        <TableRow
+            android:id="@+id/row_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Số điện thoại"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:id="@+id/textView_phone"
+                android:text="01687909930"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Nhà mạng"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:id="@+id/textView_namecard"
+                android:text="Viettel"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Mệnh giá"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:id="@+id/textView_price"
+                android:text="10000 đ"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+        <TableRow
+            android:id="@+id/row_qty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Số lượng"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:id="@+id/textView_qty"
+                android:text="1"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Khuyến mại"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:id="@+id/textView_discount"
+                android:text="3%"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/border_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="Tổng tiền"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|left"/>
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:id="@+id/textView_total"
+                android:text="xxxxx đ"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:padding="10dip" android:gravity="center|right"/>
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:background="@drawable/button_yellow"
+        android:textColor="@color/myBlack"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"
+        android:id="@+id/button_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Xác nhận" />
+</RelativeLayout>

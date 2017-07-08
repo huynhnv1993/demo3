@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/myYellow"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+            <ImageView
+                android:layout_gravity="right"
+                android:id="@+id/image_barcode"
+                android:src="@drawable/barcode"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:background="#9edadada">
+            <ImageView
+                android:src="@drawable/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_weight="8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="ĐĂNG NHẬP"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:layout_marginTop="20dp"
+                android:id="@+id/edtUserName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:minHeight="40dp"
+                android:singleLine="true" />
+
+            <EditText
+                android:layout_marginTop="10dp"
+                android:id="@+id/edtPassword"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:minHeight="40dp" />
+
+            <CheckBox
+                android:id="@+id/checkBoxSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ghi nhớ tài khoản" />
+
+            <Button
+                android:layout_marginTop="20dp"
+                android:id="@+id/btnLogin"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#00dddd"
+                android:minHeight="50dp"
+                android:text="Đăng nhập"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_marginTop="20dp"
+                android:id="@+id/btnLoginCard"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_yellow"
+                android:minHeight="50dp"
+                android:text="Check CARD"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
