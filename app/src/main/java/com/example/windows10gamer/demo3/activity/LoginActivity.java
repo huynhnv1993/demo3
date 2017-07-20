@@ -1,13 +1,19 @@
 package com.example.windows10gamer.demo3.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +52,8 @@ import rx.Subscriber;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
-    private RxConnectionDialog connectionDialog;
-    private MpaioManager mpaioManager;
+    public static RxConnectionDialog connectionDialog;
+    public static MpaioManager mpaioManager;
     private Logger logger = new Logger();
     private Context mContext;
     private String savedata="";
@@ -64,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     JSONObject objects;
     Toolbar toolbar;
     String data="123456";
+    ImageView imgBarcode;
     public LoginActivity() throws ExecutionException, InterruptedException {
     }
 
@@ -76,13 +84,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         View rootView = ((Activity)LoginActivity.this).getWindow().getDecorView().findViewById(android.R.id.content);
 
         mContext = getApplicationContext();
-        mpaioManager = new MpaioManager(getApplicationContext());
+
+        Log.d("mpaio", String.valueOf(mpaioManager));
+        if (mpaioManager== null){
+            mpaioManager = new MpaioManager(getApplicationContext());
+
+        }
         connectionDialog = new RxConnectionDialog(this, mpaioManager);
         alertbox = showDialogcustom();
 
         if ( !mpaioManager.isConnected()) {
             connectionDialog.show();
         }
+        imgBarcode = (ImageView) findViewById(R.id.image_barcode);
+        imgBarcode.setOnClickListener(this);
         ok = (Button)findViewById(R.id.btnLogin);
         ok.setOnClickListener(this);
         checkCard = (Button)findViewById(R.id.btnLoginCard);
@@ -227,7 +242,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onNext(MpaioMessage mpaioMessage) {
                         byte[] data = mpaioMessage.getData();
 
-                        logger.i(TAG, "AID : " + Converter.toInt(mpaioMessage.getAID())
+                        logger.d(TAG, "AID : " + Converter.toInt(mpaioMessage.getAID())
                                 + " CMD : " + Converter.toHexString(mpaioMessage.getCommandCode())
                                 + " Data : " + Converter.toHexString(mpaioMessage.getData()));
 
@@ -285,6 +300,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             connectionDialog.onRequestPermissionResult(requestCode, permissions, grantResults);
         }
 
+        if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
     }
 
     @Override
@@ -310,7 +336,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_connect:
-                Log.d("code", new MpaioCommand(MpaioCommand.READ_MS_CARD).getCode().toString());
                 if ( mpaioManager.isConnected()) {
                     mpaioManager.disconnect();
                     return true;
@@ -327,6 +352,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void onClick(View view) {
         if (view == ok) {
+            ok.setBackgroundResource(R.drawable.button_brown);
             progressDialog = ProgressDialog.show(LoginActivity.this, "ĐĂNG NHẬP",
                     "Quá trình đăng nhập sẽ kết thúc sau 1 tiếng =]]].", true);
 
@@ -345,6 +371,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             doSomethingElse();
         }else if (view == checkCard){
             doCheckCard(view);
+        }else if(view == imgBarcode){
+            doReadBarcode(view);
+        }
+    }
+
+    private void doReadBarcode(View v) {
+        if ( !mpaioManager.isConnected()) {
+            connectionDialog.show();
+        }else {
+
+
+            TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+            TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+            textView1.setText("INSERT BARCODE");
+            textView2.setText("BARCODE");
+            alertbox.show();
+            try {
+                mpaioManager.rxSyncRequest(mpaioManager.getNextAid(), new MpaioCommand(MpaioCommand.READ_BARCODE).getCode(), new byte[0])
+                        .subscribe(); //Command for activating Barcode Mode
+            }catch (NumberFormatException e) {
+                ToastUtil.show(getApplicationContext(), "Input valid number");
+                e.printStackTrace();
+            }
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
+
         }
     }
 
@@ -435,4 +490,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         return aDialog;
     }
+
+    private static final int READ_CONTACTS_PERMISSIONS_REQUEST = 1;
+
+    // Called when the user is performing an action which requires the app to read the
+    // user's contacts
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void getPermissionToReadUserContacts() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_CONTACTS)) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                    READ_CONTACTS_PERMISSIONS_REQUEST);
+        }
+    }
+
+
 }

@@ -33,6 +33,7 @@ public class CheckCardInfo extends AsyncTask<String, Void, JSONObject> {
         final String data = params[0];
         final String login = params[1];
         final String name = params[2];
+        Log.d("login",login);
         final XmlRpcClient objClient = new XmlRpcClient();
         final XmlRpcClientConfigImpl objStartConfig = new XmlRpcClientConfigImpl();
         try {
@@ -48,9 +49,9 @@ public class CheckCardInfo extends AsyncTask<String, Void, JSONObject> {
             record = asList((Object[])objClient.execute("execute_kw", asList(
                     db, uid, password,
                     "res.users", "search_read",
-                    asList(asList(asList("x_dataread","=",data))),
+                    asList(asList(asList("login","=",login))),
                     new HashMap() {{
-                        put("fields", asList( "id", "name","partner_id","street","mobile","balance","email"));
+                        put("fields", asList( "id", "name","partner_id","street","mobile","balance","email","image_medium"));
                     }}
             )));
         } catch (XmlRpcException e) {

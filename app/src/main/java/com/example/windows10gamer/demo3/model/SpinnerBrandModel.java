@@ -12,14 +12,25 @@ public class SpinnerBrandModel {
     private Integer Id;
     private Double Discount;
     private JSONArray product;
+    private String IdNumber;
 
-    public SpinnerBrandModel(String name, String image, Integer id, Double discount, JSONArray product) {
+    public String getIdNumber() {
+        return IdNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        IdNumber = idNumber;
+    }
+
+    public SpinnerBrandModel(String name, String image, Integer id, Double discount, JSONArray product, String idNumber) {
         Name = name;
         Image = image;
         Id = id;
         Discount = discount;
         this.product = product;
+        IdNumber = idNumber;
     }
+
 
     public JSONArray getProduct() {
         return product;

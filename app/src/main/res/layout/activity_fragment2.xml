@@ -1,9 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.windows10gamer.demo3.activity.Fragment1">
+    android:orientation="vertical"
+    android:background="#f8f8f8f8">
 
-</android.support.constraint.ConstraintLayout>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/bottom_container"
+        android:layout_below="@id/title"
+        android:layout_weight="1"
+        android:fillViewport="false"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/myGray"
+                android:padding="5dp"
+                android:text="NẠP CHO"
+                android:textColor="#030303"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/layout_left"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="12sp"
+                        android:id="@+id/text_name"
+                        android:text="NGUYEN VIET HUYNH"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/text_phone"
+                        android:layout_marginTop="5dp"
+                        android:text="01687909930"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+                <ImageView
+                    android:background="@color/myGray"
+                    android:id="@+id/image_contact"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/icon_contact"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/myGray"
+                    android:padding="5dp"
+                    android:text="MỆNH GIÁ THẺ"
+                    android:textColor="#030303"
+                    android:textSize="14sp" />
+
+                <GridView
+                    android:id="@+id/gridView"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp">
+
+                </GridView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:background="#fff"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center">
+        <Button
+            android:textStyle="bold"
+            android:id="@+id/btn_continue1"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"
+            android:background="@drawable/button_yellow"
+            android:textColor="@color/myBlack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiếp tục"/>
+    </RelativeLayout>
+</LinearLayout>

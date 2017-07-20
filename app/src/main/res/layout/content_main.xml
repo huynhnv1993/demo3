@@ -22,9 +22,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
             <ImageView
-                android:src="@drawable/naptien"
-                android:layout_width="86dp"
-                android:layout_height="53dp" />
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/naptienvaovi"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp" />
             <TextView
                 android:textColor="@color/myWhite"
                 android:text="Nạp tiền vào ví"
@@ -38,11 +39,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
             <ImageView
-                android:src="@mipmap/ic_launcher"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/chuyenkhoan"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="30dp" />
             <TextView
-                android:text="Rút tiền"
+                android:text="Chuyển khoản"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -53,11 +55,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
             <ImageView
-                android:src="@mipmap/ic_launcher"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/ruttien"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="30dp" />
             <TextView
-                android:text="Thanh toán"
+                android:text="Rút tiền"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -69,6 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:layout_margin="5dp"
             android:orientation="vertical"
             android:layout_weight="4"
             android:layout_width="0dp"
@@ -76,19 +80,20 @@
             <TextView
                 android:textSize="12sp"
                 android:id="@+id/text_user"
-                android:layout_margin="5dp"
+
                 android:text="Tài khoản"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:textSize="12sp"
                 android:id="@+id/text_phone"
-                android:layout_margin="5dp"
+
                 android:text="Số điện thoại"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <LinearLayout
+            android:layout_margin="5dp"
             android:gravity="right"
             android:orientation="vertical"
             android:layout_weight="5"
@@ -99,7 +104,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="0dp"
-                android:text="Số dư trong ví:"
+                android:text="Số dư:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
@@ -117,32 +122,157 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:layout_marginTop="10dp"
-            android:weightSum="3"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/image_prepaid"
-                    android:layout_width="112dp"
-                    android:layout_height="84dp"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/border_box"
-                    android:padding="2dp"
-                    android:src="@drawable/naptiendienthoai" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Nạp tiền điện thoại" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_prepaid"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/naptiendienthoai" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nạp tiền điện thoại" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_baohiem"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/banbaohiem" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bán bảo hiểm" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_diennuoc"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/thanhtoandien" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thanh toán điện" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_chuyentien"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/chuyentien" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chuyển tiền" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_internet"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/thanhtoaninternet" />
+
+                    <TextView
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thanh toán INTERNET" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_vexemphim"
+                        android:layout_width="112dp"
+                        android:layout_height="45dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/border_box"
+                        android:padding="2dp"
+                        android:src="@drawable/datvexemphim" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mua vé xem phim" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

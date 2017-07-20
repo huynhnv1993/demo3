@@ -42,6 +42,7 @@ public class Fragment1 extends Fragment {
     private double discount = 0;
     private String name = "Viettel";
     Boolean checkbuy = true;
+    Button btn_continue1;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class Fragment1 extends Fragment {
         final PrepaidActivity activity = (PrepaidActivity) getActivity();
         final ArrayList<SpinnerBrandModel> list = new ArrayList<>();
         try {
-            JSONArray jsonArray = new JSONArray(activity.getIntent().getStringExtra("brandcard"));
+            JSONArray jsonArray = activity.brandCard;
             for (int i = 0; i<jsonArray.length(); i++){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject = jsonArray.getJSONObject(i);
@@ -84,8 +85,7 @@ public class Fragment1 extends Fragment {
                 myTask.execute( String.valueOf(jsonObject.getInt("id")));
                 try {
                     JSONArray objects = myTask.get();
-                    list.add(new SpinnerBrandModel(jsonObject.getString("name"),jsonObject.getString("logo"),jsonObject.getInt("id"),jsonObject.getDouble("discount"),objects));
-                    Log.d("logo ",jsonObject.getString("logo"));
+                    list.add(new SpinnerBrandModel(jsonObject.getString("name"),jsonObject.getString("logo"),jsonObject.getInt("id"),jsonObject.getDouble("discount"),objects,jsonObject.getString("brand_mobile_code")));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -108,15 +108,7 @@ public class Fragment1 extends Fragment {
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                if (sp != null && sp.getChildAt(0) != null){
-//                    ((TextView) sp.getChildAt(0).findViewById(R.id.company)).setTextColor(Color.BLUE);
-//                    name = (String) ((TextView) sp.getChildAt(0).findViewById(R.id.company)).getText();
-//                }else {
-//                    sp.setSelection(position);
-//                }
-//                if (sp == null){
-//                    Log.d("chuan","");
-//                }
+                name = list.get(position).getName();
                 JSONArray objects = list.get(position).getProduct();
                 arrList.clear();
                 for (int i = 0; i<objects.length(); i++){
@@ -146,10 +138,11 @@ public class Fragment1 extends Fragment {
                 ((TextView) parent.getChildAt(0).findViewById(R.id.company)).setTextColor(Color.RED);
             }
         });
-        Button btn_continue1 = (Button) view1.findViewById(R.id.btn_continue1);
+        btn_continue1 = (Button) view1.findViewById(R.id.btn_continue1);
         btn_continue1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btn_continue1.setBackgroundResource(R.drawable.button_yellow_clicked);
                 if (checkbuy){
                     qty = activity.minteger;
                     Intent intent = new Intent(getContext(),PaymentActivity.class);
@@ -159,9 +152,11 @@ public class Fragment1 extends Fragment {
                     intent.putExtra("price",price);
                     intent.putExtra("discount",discount);
                     intent.putExtra("type","PREPAIDCARD");
+                    intent.putExtra("phone","");
                     Log.d(String.format("%d / %d / %s / %d / %s", qty, Id, name, price, discount), "qty / id / name / price / discount");
                     startActivity(intent);
                 }else {
+                    btn_continue1.setBackgroundResource(R.drawable.button_yellow);
                     Toast bread = Toast.makeText(activity, "Không có sản phẩm được chọn!", Toast.LENGTH_LONG);
                     bread.show();
                 }
@@ -169,5 +164,11 @@ public class Fragment1 extends Fragment {
         });
 
         return view1;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        btn_continue1.setBackgroundResource(R.drawable.button_yellow);
     }
 }

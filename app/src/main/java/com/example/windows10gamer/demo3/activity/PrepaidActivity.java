@@ -9,10 +9,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.windows10gamer.demo3.R;
+import com.example.windows10gamer.demo3.model.ContactVO;
+import com.example.windows10gamer.demo3.model.GetBrandProduct;
+
+import org.json.JSONArray;
+
+import java.util.concurrent.ExecutionException;
 
 public class PrepaidActivity extends AppCompatActivity {
 
@@ -20,12 +27,20 @@ public class PrepaidActivity extends AppCompatActivity {
     ViewPager viewPager;
     Toolbar toolbar;
     int minteger = 1;
+    JSONArray brandTopup = null,brandCard = null;
+
+    public String contactname="",contactnumber="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prepaid);
 
+        contactname = getIntent().getStringExtra("contactname");
+        contactnumber = getIntent().getStringExtra("contactnumber");
+
+        GetBrandTopup();
+        GetBrandCard();
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new CustomAdapter(getSupportFragmentManager(),getApplicationContext()));
 
@@ -48,10 +63,35 @@ public class PrepaidActivity extends AppCompatActivity {
             }
         });
 
-
         ActionToolbar();
 
 
+    }
+
+    private void GetBrandCard() {
+        GetBrandProduct myTask3 = new GetBrandProduct();
+        myTask3.execute("MobileCard");
+        try {
+            brandCard = myTask3.get();
+            Log.d("brandCard ", String.valueOf(brandCard));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void GetBrandTopup() {
+        GetBrandProduct myTask2 = new GetBrandProduct();
+        myTask2.execute("Topup");
+        try {
+            brandTopup = myTask2.get();
+            Log.d("brand TOpup ", String.valueOf(brandTopup));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -84,7 +124,7 @@ public class PrepaidActivity extends AppCompatActivity {
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
-        private String fragments [] = {"MUA MÃ THẺ","TRẢ TRƯỚC","TRẢ SAU"};
+        private String fragments [] = {"TRẢ TRƯỚC","MUA MÃ THẺ","TRẢ SAU"};
 
         public CustomAdapter(FragmentManager supportFragmentManager, Context applicationContext) {
             super(supportFragmentManager);
@@ -93,9 +133,9 @@ public class PrepaidActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0:
-                    return new Fragment1();
                 case 1:
+                    return new Fragment1();
+                case 0:
                     return new Fragment2();
                 case 2:
                     return new Fragment3();

@@ -1,8 +1,14 @@
 package com.example.windows10gamer.demo3.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,15 +17,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.windows10gamer.demo3.R;
+import com.example.windows10gamer.demo3.model.GetBalance;
 import com.example.windows10gamer.demo3.model.GetBrandProduct;
 import com.samilcts.sdk.mpaio.MpaioManager;
 import com.samilcts.sdk.mpaio.command.MpaioCommand;
@@ -41,31 +53,35 @@ import rx.Subscriber;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
-    private RxConnectionDialog connectionDialog;
-    private MpaioManager mpaioManager;
+    public static RxConnectionDialog connectionDialog;
+    public static MpaioManager mpaioManager;
     private Logger logger = new Logger();
     private Context mContext;
-
-    private TextView name,phonenumber,balance;
+    private TextView name,phonenumber,txtbalance,uname,uaddress;
+    double balance;
     ProgressDialog progressDialog;
-    String cardphone;
+    String cardphone,image_person ="";
     public static JSONObject profile=null;
-    ImageView imgCard;
+    ImageView imgCard,imgBarcode,img_Baohiem,img_thanhtoandien,img_chuyentien,img_thanhtoaninternet,img_muavexemphim,img_person;
     Toolbar toolbar;
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     NavigationView navigationView;
+    Dialog alertbox;
 
-    JSONArray brand = null;
+    JSONArray  partner = null;
+    int partner_id=1;
     public static int uid=-1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = getApplicationContext();
-        mpaioManager = new MpaioManager(getApplicationContext());
+        Log.d("mpaio1", String.valueOf(mpaioManager));
+        mpaioManager = LoginActivity.mpaioManager;
         connectionDialog = new RxConnectionDialog(this, mpaioManager);
+
         try {
             profile = new JSONObject(getIntent().getStringExtra("profile"));
             uid = profile.getInt("id");
@@ -83,32 +99,86 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         imgCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = ProgressDialog.show(MainActivity.this, "LOAD DATA","Quá trình LOAD sẽ kết thúc sau 1 tiếng =]]].", true);
-                GetBrandProduct myTask2 = new GetBrandProduct();
-                myTask2.execute("MobileCard");
+                imgCard.setBackgroundColor(Color.parseColor("#dedede"));
+                Intent intent = new Intent(getApplicationContext(),PrepaidActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        imgBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 try {
-                    brand = myTask2.get();
-                    Log.d("brand ", String.valueOf(brand));
-                } catch (InterruptedException e) {
+                    mpaioManager.rxSyncRequest(mpaioManager.getNextAid(), new MpaioCommand(MpaioCommand.READ_BARCODE).getCode(), new byte[0])
+                            .subscribe(); //Command for activating Barcode Mode
+                }catch (NumberFormatException e) {
+                    ToastUtil.show(getApplicationContext(), "Input valid number");
                     e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                if (brand!=null){
-                    progressDialog.dismiss();
-                    Intent intent = new Intent(getApplicationContext(),PrepaidActivity.class);
-                    intent.putExtra("brandcard", String.valueOf(brand));
-                    startActivity(intent);
-                }else {
-                    progressDialog.dismiss();
-                    Toast bread = Toast.makeText(getApplicationContext(), "Không có dữ liệu", Toast.LENGTH_LONG);
-                    bread.show();
                 }
             }
         });
+
+        img_Baohiem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+                TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+                textView2.setText("THÔNG BÁO");
+                textView1.setText("Dịch vụ đang phát triển!\nCảm ơn!");
+                alertbox.show();
+            }
+        });
+        img_thanhtoandien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+                TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+                textView2.setText("THÔNG BÁO");
+                textView1.setText("Dịch vụ đang phát triển!\nCảm ơn!");
+                alertbox.show();
+            }
+        });
+        img_chuyentien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+                TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+                textView2.setText("THÔNG BÁO");
+                textView1.setText("Dịch vụ đang phát triển!\nCảm ơn!");
+                alertbox.show();
+            }
+        });
+        img_thanhtoaninternet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+                TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+                textView2.setText("THÔNG BÁO");
+                textView1.setText("Dịch vụ đang phát triển!\nCảm ơn!");
+                alertbox.show();
+            }
+        });
+        img_muavexemphim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
+                TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
+                textView2.setText("THÔNG BÁO");
+                textView1.setText("Dịch vụ đang phát triển!\nCảm ơn!");
+                alertbox.show();
+            }
+        });
+
     }
 
     private void Mapping() {
+        alertbox = showDialogcustom();
+        img_Baohiem = (ImageView) findViewById(R.id.image_baohiem);
+        img_thanhtoandien = (ImageView) findViewById(R.id.image_diennuoc);
+        img_chuyentien = (ImageView) findViewById(R.id.image_chuyentien);
+        img_thanhtoaninternet = (ImageView) findViewById(R.id.image_internet);
+        img_muavexemphim = (ImageView) findViewById(R.id.image_vexemphim);
+        imgBarcode = (ImageView) findViewById(R.id.image_barcode);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Trang chủ");
@@ -121,22 +191,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
+        View header=navigationView.getHeaderView(0);
+        uname = (TextView) header.findViewById(R.id.txtname);
+        uaddress = (TextView) header.findViewById(R.id.textView);
+        img_person = (ImageView) header.findViewById(R.id.imageView);
+
 
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         imgCard = (ImageView) findViewById(R.id.image_prepaid);
         name = (TextView) findViewById(R.id.text_user);
         phonenumber = (TextView) findViewById(R.id.text_phone);
-        balance = (TextView) findViewById(R.id.text_balance);
+        txtbalance = (TextView) findViewById(R.id.text_balance);
+
         try {
+            image_person = profile.getString("image_medium");
             name.setText(profile.getString("name"));
+            uname.setText(profile.getString("name"));
             if (profile.getString("mobile")!="false"){
                 phonenumber.setText(profile.getString("mobile"));
-            }else{
+            }else if (profile.getString("email")!="false"){
                 phonenumber.setText(profile.getString("email"));
-            }
+            }else {phonenumber.setText("");}
 
-            balance.setText(decimalFormat.format(profile.getDouble("balance")) + " đ");
+            if (profile.getString("email")!="false"){
+                uaddress.setText(profile.getString("email"));
+            }else {
+                uaddress.setText(profile.getString("phone"));
+            }
+            partner= new JSONArray(profile.getString("partner_id"));
+            partner_id = partner.getInt(0);
+
+            txtbalance.setText(decimalFormat.format(profile.getDouble("balance")) + " đ");
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (image_person != null){
+            byte[] decodedString = Base64.decode(image_person, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            img_person.setImageBitmap(decodedByte);
+        }
+        GetBalance myTask2 = new GetBalance();
+        myTask2.execute(String.valueOf(partner_id));
+        try {
+            balance = myTask2.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }
@@ -174,7 +275,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_connect:
-                Log.d("code", new MpaioCommand(MpaioCommand.READ_MS_CARD).getCode().toString());
                 if ( mpaioManager.isConnected()) {
                     mpaioManager.disconnect();
                     return true;
@@ -187,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_logout:
 
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 MainActivity.this.finish();
         }
@@ -219,53 +320,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private Subscriber<MpaioMessage> getMessageSubscriber() {
-
-        return new Subscriber<MpaioMessage>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-                e.printStackTrace();
-                String msg = null == e.getMessage() ? e.toString() : e.getMessage();
-                ToastUtil.show(mContext, "ERROR : " + msg);
-            }
-
-            @Override
-            public void onNext(MpaioMessage mpaioMessage) {
-
-                byte[] data = mpaioMessage.getData();
-
-                if (ResponseError.fromCode(data[0]) == ResponseError.NO_ERROR) {
-                    //response ok
-                }
-
-
-                logger.i(TAG, "AID : " + Converter.toInt(mpaioMessage.getAID())
-                        + " CMD : " + Converter.toHexString(mpaioMessage.getCommandCode())
-                        + " Data : " + Converter.toHexString((byte[]) mpaioMessage.getData()));
-
-                ToastUtil.show(mContext, "received data part : " + Converter.toHexString(data));
-                ToastUtil.show(mContext, "(string) : " + (data == null ? "" : new String(data)));
-
-            }
-        };
-    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    protected void onResume() {
+        super.onResume();
+        imgCard.setBackgroundResource(R.drawable.border_box);
+    }
 
+    private Dialog showDialogcustom(){
+        final Dialog aDialog = new Dialog(this);
+        aDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        aDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        aDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        aDialog.setContentView(R.layout.dialog_custom);
+        aDialog.setCancelable(false);
+        Button btn_close = (Button) aDialog.findViewById(R.id.close_button);
+        Button btn_OK = (Button) aDialog.findViewById(R.id.buttonOK);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                aDialog.dismiss();
+            }
+        });
+        btn_OK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                aDialog.dismiss();
+            }
+        });
 
-        if ( null != connectionDialog && connectionDialog.isShowing()) {
-            //this is for updating connection dialog state.
-            connectionDialog.onRequestPermissionResult(requestCode, permissions, grantResults);
-        }
-
+        return aDialog;
     }
 }
 

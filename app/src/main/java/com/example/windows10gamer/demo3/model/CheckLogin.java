@@ -80,7 +80,7 @@ public class CheckLogin extends AsyncTask<String, Void, JSONObject> {
                         "res.users", "search_read",
                         asList(asList(asList("id","=",uid))),
                         new HashMap() {{
-                            put("fields", asList( "id", "name","partner_id","street","mobile","balance","email"));
+                            put("fields", asList( "id", "name","partner_id","street","mobile","balance","email","image_medium"));
                         }}
                 )));
             } catch (XmlRpcException e) {

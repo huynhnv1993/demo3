@@ -1,10 +1,13 @@
 package com.example.windows10gamer.demo3.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -19,25 +23,24 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.windows10gamer.demo3.R;
-import com.example.windows10gamer.demo3.model.CheckCardInfo;
-import com.example.windows10gamer.demo3.model.CheckLogin;
-import com.example.windows10gamer.demo3.model.CreateOrderLineModel;
 import com.example.windows10gamer.demo3.model.CreateOrderModel;
 import com.example.windows10gamer.demo3.model.GetBalance;
 
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import static java.util.Arrays.asList;
 
 public class PaymentActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -56,12 +59,11 @@ public class PaymentActivity extends AppCompatActivity {
     int partner_id=1;
     int order_id = -1;
     int order_line_id = -1;
-    ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-
         profile = MainActivity.profile;
         try {
             partner= new JSONArray(profile.getString("partner_id"));
@@ -78,7 +80,7 @@ public class PaymentActivity extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Log.d("partner " , String.valueOf(balance));
+        Log.d("balance " , String.valueOf(balance));
 
         Mapping();
         type = getIntent().getStringExtra("type");
@@ -98,6 +100,18 @@ public class PaymentActivity extends AppCompatActivity {
                 Log.d("data", data.toString());
                 break;
             case "TOPUP" :
+                table.removeView(row_qty);
+                JSONObject obj1 = new JSONObject();
+                try {
+                    obj1.put("type", type);
+                    obj1.put("cardTypeId", getIntent().getIntExtra("id",0));
+                    obj1.put("phone", getIntent().getStringExtra("phone"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                data = new JSONArray();
+                data.put(obj1);
+                Log.d("data", data.toString());
                 break;
             default:
                 return;
@@ -110,16 +124,30 @@ public class PaymentActivity extends AppCompatActivity {
         btnconfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnconfirm.setBackgroundResource(R.drawable.button_yellow_clicked);
                 if (total > balance){
                     TextView textView1 = (TextView) alertbox.findViewById(R.id.textview_message);
                     TextView textView2 = (TextView) alertbox.findViewById(R.id.title_dialog);
                     textView2.setText("THÔNG BÁO");
                     textView1.setText("Số dư tài khoản không đủ để thực hiện giao dịch!\nVui lòng nạp tiền vào tài khoản!\nCảm ơn!");
                     alertbox.show();
+                    btnconfirm.setBackgroundResource(R.drawable.button_yellow);
                 }else {
                     if (data != null){
-
-                        ActionBuyCard();
+                        progressDialog = ProgressDialog.show(PaymentActivity.this, "GIAO DỊCH", "Quá trình giao dịch đang thực hiện. Xin chờ trong giây lát.", true);
+                        new Thread() {
+                            public void run() {
+                                try {
+                                    ActionBuyCard();
+                                } catch (Exception e) {
+                                }
+                                progressDialog.dismiss();
+                            }
+                        }.start();
+                        btnconfirm.setBackgroundResource(R.drawable.button_yellow);
+                    }else {
+                        btnconfirm.setBackgroundResource(R.drawable.button_yellow);
+                        Log.d("Error","Loi data");
                     }
                 }
             }
@@ -127,29 +155,11 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void ActionBuyCard() {
-//        progressDialog = ProgressDialog.show(PaymentActivity.this, "GIAO DỊCH","Quá trình giao dịch đang thực hiện. Xin chờ trong giây lát.", true);
-
-
         CreateOrderModel myTask = new CreateOrderModel();
-        myTask.execute(String.valueOf(partner_id));
+        myTask.execute(String.valueOf(partner_id),String.valueOf(getIntent().getIntExtra("id",0)), String.valueOf(getIntent().getIntExtra("qty",0)),String.valueOf(getIntent().getStringExtra("phone")));
         try {
             order_id = myTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        if (order_id != -1){
-            CreateOrderLineModel myTask2 = new CreateOrderLineModel();
-            myTask2.execute(String.valueOf(order_id), String.valueOf(getIntent().getIntExtra("id",0)), String.valueOf(getIntent().getIntExtra("qty",0)));
-            try {
-                order_line_id = myTask2.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            if (order_line_id != -1){
+            if (order_id != -1){
                 Intent intent = new Intent(getApplicationContext(),ConfirmationActivity.class);
                 intent.putExtra("order_id",order_id);
                 intent.putExtra("uid",MainActivity.uid);
@@ -160,15 +170,18 @@ public class PaymentActivity extends AppCompatActivity {
                 intent.putExtra("price",getIntent().getIntExtra("price",0));
                 intent.putExtra("qty",getIntent().getIntExtra("qty",0));
                 intent.putExtra("type",type);
+                intent.putExtra("phone",getIntent().getStringExtra("phone"));
                 startActivity(intent);
             }else {
-                Toast bread = Toast.makeText(getApplicationContext(), "Lỗi tạo order line", Toast.LENGTH_LONG);
+                Toast bread = Toast.makeText(getApplicationContext(), "Lỗi tạo order", Toast.LENGTH_LONG);
                 bread.show();
             }
-        }else {
-            Toast bread = Toast.makeText(getApplicationContext(), "Lỗi tạo order", Toast.LENGTH_LONG);
-            bread.show();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
+
 
 
     }
@@ -240,4 +253,6 @@ public class PaymentActivity extends AppCompatActivity {
 
         return aDialog;
     }
+
+
 }
